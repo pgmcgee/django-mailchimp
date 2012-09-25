@@ -1,12 +1,12 @@
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.contrib import messages 
+import django_messages_framework as messages 
 from django.core.urlresolvers import reverse
 from django.core.cache import cache
 from django.contrib.contenttypes.models import ContentType
 from django.utils import simplejson
 from django.contrib.auth import logout
-from django.contrib.messages import debug, info, success, warning, error, add_message
+from django_messages_framework import debug, info, success, warning, error, add_message
 from django.http import (
     HttpResponse, HttpResponseForbidden, Http404, HttpResponseNotAllowed,
     HttpResponseRedirect, HttpResponsePermanentRedirect, HttpResponseNotModified,
@@ -43,7 +43,7 @@ class Cache(object):
             self._clear_lock = False
         value = self._get(key)
         if value is None:
-            value = obj(*args, **kwargs) if callable(obj) else obj          
+            value = callable(obj) and obj(*args, **kwargs) or obj          
             self._set(key, value)
         return value
     
@@ -112,7 +112,7 @@ class Paginator(object):
         self.get_link = get_link
         self.all_objects = objects
         self.objects_count = objects.count()
-        per_page = per_page() if callable(per_page) else per_page
+        per_page = callable(per_page) and per_page() or per_page
         self.pages_count = int(float(self.objects_count) / float(per_page)) + 1
         self.bullets_count = 5
         self.per_page = per_page

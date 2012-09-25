@@ -274,7 +274,7 @@ class List(BaseChimpObject):
         return self.cache.get('interest_groups', self.master.con.list_interest_groups, self.id)
     
     def add_merge(self, key, desc, req={}):
-        return self.master.con.list_merge_var_add(self.id, key, desc, req if req else False)
+        return self.master.con.list_merge_var_add(self.id, key, desc, req and req or False)
         
     def remove_merge(self, key):
         return self.master.con.list_merge_var_del(self.id, key)
@@ -314,7 +314,7 @@ class List(BaseChimpObject):
         segment_opts = {'match': 'all' if self.segment_options_all else 'any',
         'conditions': simplejson.loads(self.segment_options_conditions)}
         """
-        mode = all if segment_opts['match'] == 'all' else any
+        mode = all and segment_opts['match'] == 'all' or any
         conditions = [SegmentCondition(**dict((str(k), v) for k,v in c.items())) for c in segment_opts['conditions']]
         for email, member in self.members.items():
             if mode([condition.check(member) for condition in conditions]):

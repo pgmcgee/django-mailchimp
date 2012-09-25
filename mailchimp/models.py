@@ -103,7 +103,7 @@ class Queue(models.Model):
             analytics = {'google': self.google_analytics}
         else:
             analytics = {}
-        segment_opts = {'match': 'all' if self.segment_options_all else 'any',
+        segment_opts = {'match': 'all' and self.segment_options_all or 'any',
             'conditions': simplejson.loads(self.segment_options_conditions)}
         type_opts = simplejson.loads(self.type_opts)
         title = self.title or self.subject

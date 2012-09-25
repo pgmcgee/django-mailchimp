@@ -70,7 +70,7 @@ class Connection(object):
 
 
         # flatten dict variables
-        params = dict([(str(k), v.encode('utf-8') if isinstance(v, unicode) else v) for k,v in flatten(params).items()])
+        params = dict([(str(k), isinstance(v, unicode) and v.encode('utf-8') or v) for k,v in flatten(params).items()])
         params['output'] = self.output
         params['apikey'] = self._apikey
 
@@ -115,19 +115,13 @@ class Connection(object):
                        email_address,
                        merge_vars,
                        email_type='text',
-                       double_optin=True,
-                       update_existing=False,
-                       replace_interests=True,
-                       send_welcome=False):
+                        double_optin=True):
         return self._api_call(method='listSubscribe',
                               id=id,
                               email_address=email_address,
                               merge_vars=merge_vars,
                               email_type=email_type,
-                              double_optin=double_optin,
-                              update_existing=update_existing,
-                              replace_interests=replace_interests,
-                              send_welcome=send_welcome)
+                              double_optin=double_optin)
 
     def list_unsubscribe(self,
                          id,
